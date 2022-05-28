@@ -46,7 +46,7 @@ ma-pre-start.sh脚本是ModelArts在拉起容器训练后，首先会自动执�
 
 ## 快速入门体验
 
-4行代码祝您快速适配AICC平台！
+4行代码助您快速适配AICC平台！
 
 [MindSpore模型算法快速适配AICC](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#demo1-mindspore)
 
