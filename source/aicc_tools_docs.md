@@ -38,11 +38,15 @@ pip install aicc_tools
     echo ***********ma-pre-end*********
 ```
 
-ma-pre-start.sh脚本是ModelArts在拉起容器训练后，首先会自动执行的脚本，在这里用户可以指定运行的环境或者安装第三方wheel包
+ma-pre-start.sh脚本是ModelArts在拉起容器训练后，首先会自动执行的脚本，在这里用户可以指定运行的环境或者安装第三方wheel包。
+
+**注：目前aicc_tools V0.1.6 版本基于ModelArts训练作业V1版本开发，V2版本尚不支持，请选择旧版训练作业服务进行试用！！！**
 
 # AICC Tools 全流程使用
 
 ## 快速入门体验
+
+4行代码祝您快速适配AICC平台！
 
 [MindSpore模型算法快速适配AICC](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#demo1-mindspore)
 
