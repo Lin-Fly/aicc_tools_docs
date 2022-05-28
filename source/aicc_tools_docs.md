@@ -44,18 +44,18 @@ ma-pre-start.sh脚本是ModelArts在拉起容器训练后，首先会自动执�
 
 ## 快速入门体验
 
-[MindSpore模型算法快速适配AICC](###Demo1 Mindspore常用训练示范)
+[MindSpore模型算法快速适配AICC](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#demo1-mindspore)
 
 ## 一、AICC 训练进程监控
 
-aicc tools 中提供了 aicc_monitor装饰器接口，主要用于帮助开发者在AICC平台上监控训练算法的进程是否发生异常，在训练正常结束或者异常中断后，补获日志信息，同时将用户产生的最后一份文件回传保存至obs桶中。主要保存的内容包括：日志（plog、用户打印日志、错误日志、mindspore日志等）、模型权重文件、summary文件、其他用户保存的文件等。如果用户想要保存mindspore相关的图信息（graph、ir、dot、dump文件等），请参考MindSpore环境设置进行操作：[MindSpore运行环境设置](###MindSpore 运行环境设置)
+aicc tools 中提供了 aicc_monitor装饰器接口，主要用于帮助开发者在AICC平台上监控训练算法的进程是否发生异常，在训练正常结束或者异常中断后，补获日志信息，同时将用户产生的最后一份文件回传保存至obs桶中。主要保存的内容包括：日志（plog、用户打印日志、错误日志、mindspore日志等）、模型权重文件、summary文件、其他用户保存的文件等。如果用户想要保存mindspore相关的图信息（graph、ir、dot、dump文件等），请参考MindSpore环境设置进行操作：[MindSpore运行环境设置](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#mindspore)
 
 ### aicc_monitor 使用样例：
 
 ```python
-import aicc_tools as at
+import aicc_tools as ac
 
-@at.aicc_monitor
+@ac.aicc_monitor
 def main():
     ....
 
@@ -88,24 +88,24 @@ Return:
 ### MindSpore 运行环境设置
 
 ```python
-import aicc_tools as at
+import aicc_tools as ac
 # Example1: 默认数据并行方式启动
-rank_id, device_num = at.context_init(seed=0)
+rank_id, device_num = ac.context_init(seed=0)
 
 # Example2: 自定义并行方式启动: 数据并行模式
 ## 其中mode参数: 0 代表静态图模式GRAPH_MODE，1 代表动态图模式PYNATIVE_MODE
 context_config = {"mode": 0, "device_target": "Ascend", "device_id": 0}
 ## 其中parallel_mode: 0 代表数据并行模式DATA_PARALLEL，1 代表半自动并行模式SEMI_AUTO_PARALLEL，2 代表自动并行模式AUTO_PARALLEL
 parallel_config = {"parallel_mode": 0, "gradients_mean": True}
-rank_id, device_num = at.context_init(seed=0, parallel=True, context_config=context_config, parallel_config=parallel_config)
+rank_id, device_num = ac.context_init(seed=0, parallel=True, context_config=context_config, parallel_config=parallel_config)
 ```
 
 #### 保存图信息或Dump信息
 
-aicc tools 可通过封装的环境初始化函数 context_init(**kwargs)函数开启图信息或Dump信息保存，AICC环境无需指定保存路径，将自动回传至CFTS系统指定的obs_path路径。（注此处必须配套使用[CFTS系统](##三、AICC 文件异步交互系统)和[aicc_monitor监控](##一、AICC 训练进程监控)）
+aicc tools 可通过封装的环境初始化函数 context_init(**kwargs)函数开启图信息或Dump信息保存，AICC环境无需指定保存路径，将自动回传至CFTS系统指定的obs_path路径。（注此处必须配套使用[CFTS系统](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#id6)和[aicc_monitor监控](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#aicc)）
 
 ```python
-import aicc_tools as at
+import aicc_tools as ac
 # 自定义并行方式启动: 保存图，用于调试定位错误信息
 context_config = {
     "mode": 0,
@@ -115,13 +115,13 @@ context_config = {
     "enable_dump": True
 }  # AICC平台适配只需开启save_graphs或enable_dump,无需指定路径
 parallel_config = {"parallel_mode": 0, "gradients_mean": True}
-rank_id, device_num = at.context_init(
+rank_id, device_num = ac.context_init(
     seed=0, parallel=True, context_config=context_config, parallel_config=parallel_config)
 ```
 
 ## 三、AICC 文件异步交互系统
 
-aicc tools为用户提供了规范、便捷和易用的AICC平台文件上传和载入的API接口：CFTS，帮助用户可以将代码快速适配至AICC平台。其最大特点是能够帮助用户在代码层面将文件传输的过程隐去，让用户可以无感知的进行文件交互操作，实现 OBS存储==物理机磁盘的转换过程，且传输过程采用异步多进程方式，不仅可以不增加额外训练成本，还能最大程度上降低用户适配和使用AICC平台的难度。
+aicc tools 为用户提供了规范、便捷和易用的AICC平台文件上传和载入的API接口：CFTS，帮助用户可以将代码快速适配至AICC平台。其最大特点是能够帮助用户在代码层面将文件传输的过程隐去，让用户可以无感知的进行文件交互操作，实现 OBS存储==物理机磁盘的转换过程，且传输过程采用异步多进程方式，不仅可以不增加额外训练成本，还能最大程度上降低用户适配和使用AICC平台的难度。
 
 ### CFTS API 参数说明：
 
@@ -138,7 +138,7 @@ return：
 #### 初始化使用样例：
 
 ```python
-import aicc_tools as at
+import aicc_tools as ac
 # Example1: 按照每训练1step回传0卡的相关数据至obs路径中,obs中数据与集群节点保持一致，清除旧文件
 cfts_1 = ac.CFTS(obs_path="obs存储路径", rank_id=0, upload_frequence=1, keep_last=True)
 
@@ -152,18 +152,18 @@ cfts_3 = ac.CFTS(obs_path="obs存储路径", upload_frequence=1, keep_last=False
 
 ### CFTS 对外提供接口：
 
-* **[get_dataset](####get_dataset 数据集载入)**：载入数据集，并返回存放路径
-* **[get_checkpoint](####get_checkpoiint 权重文件载入)**：载入权重文件，并返回存放路径
-* **[obs_monitor](####obs_monitor 文件回传保存obs)**：
+* **[get_dataset](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#get-dataset)**：载入数据集，并返回存放路径
+* **[get_checkpoint](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#get-checkpoiint)**：载入权重文件，并返回存放路径
+* **[obs_monitor](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#obs-monitor-obs)**：
   * mindspore中callback函数类，用于model.train(callback=[..，checkpoint_monitor()，obs_mointor()])，保证用户文件被保存至用户指定的obs路径中
-* **[checkpoint_monitor](####checkpoint_monitor 保存权重)**：
+* **[checkpoint_monitor](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#checkpoint-monitor)**：
   * mindspore中callback函数类，用于model.train(callback=[.., checkpoint_monitor()])，保存模型权重文件
-* **[loss_monitor](####loss_monitor 训练损失打印)**：
+* **[loss_monitor](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#loss-monitor)**：
   * mindspore中callback函数类，用于model.train(callback=[.., loss_monitor()])，打印训练过程中的loss
-* **[summary_monitor](####summary_monitor 训练信息收集)**：
+* **[summary_monitor](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#summary-monitor)**：
   * mindspore中callback函数类，用于model.train(callback=[.., summary_monitor()])，保存训练过程中的summary文件
-* **[get_custom_path](####get_custom_path 自定义文件保存目录)**：AICC平台默认文件存储根路径，所有用户要保存的文件应存放在该目录下，适用于用户想要**自定义保存**一些文件时使用
-* **[send2obs](####send2obs 数据发送OBS)**：用户自定义回传接口，该接口支持用户自定义训练过程中的文件回传存储至obs中
+* **[get_custom_path](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#get-custom-path)**：AICC平台默认文件存储根路径，所有用户要保存的文件应存放在该目录下，适用于用户想要**自定义保存**一些文件时使用
+* **[send2obs](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#send2obs-obs)**：用户自定义回传接口，该接口支持用户自定义训练过程中的文件回传存储至obs中
 
 
 #### get_dataset 数据集载入
@@ -200,7 +200,7 @@ ckpt_path = cfts.get_checkpoint(dataset_path="obs模型路径")
 
 obs_monitor 函数为用户在AICC平台专门适配了规范的文件实时传输功能，可以帮助用户无感知的将在AICC平台上训练保存的文件保存到obs中，其采用异步传输特性，传输的时间损耗可以由训练时间所掩盖，不会给用户增加额外的训练成本。**值得注意的是，obs_monitor 函数目前只适用于MindSpore框架中，且需要采用model.train() or model.eval() 的方式传入callbacks=[..., obs_monitor()] 参数方式使用，且需要放在callbacks列表的最后！**
 
-请参考以下接口使用：[保存权重文件](####checkpoint_monitor 保存权重)  [收集训练信息](####summary_monitor 训练信息收集)  [保存自定义文件](####get_custom_path 自定义文件保存目录)
+请参考以下接口使用：[保存权重文件](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#checkpoint-monitor)  [收集训练信息](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#summary-monitor)  [保存自定义文件](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/instruction/aicc_tools_docs/build/html/aicc_tools_docs.html#get-custom-path)
 
 
 #### checkpoint_monitor 保存权重
