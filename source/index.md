@@ -1,4 +1,3 @@
-[TOC]
 
 # AICC Tools 使用教程
 
