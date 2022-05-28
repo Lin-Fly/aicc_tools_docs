@@ -41,17 +41,17 @@ pip install aicc_tools
 
 ma-pre-start.sh脚本是ModelArts在拉起容器训练后，首先会自动执行的脚本，在这里用户可以指定运行的环境或者安装第三方wheel包
 
-## AICC Tools 全流程使用
+# AICC Tools 全流程使用
 
-### 快速入门体验
+## 快速入门体验
 
 [MindSpore模型算法快速适配AICC](###Demo1 Mindspore常用训练示范)
 
-### 一、AICC 训练进程监控
+## 一、AICC 训练进程监控
 
-aicc tools 中提供了 aicc_monitor装饰器接口，主要用于帮助开发者在AICC平台上监控训练算法的进程是否发生异常，在训练正常结束或者异常中断后，补获日志信息，同时将用户产生的最后一份文件回传保存至obs桶中。主要保存的内容包括：日志（plog、用户打印日志、错误日志、mindspore日志等）、模型权重文件、summary文件、其他用户保存的文件等。如果用户想要保存mindspore相关的图信息（graph、ir、dot、dump文件等），请参考MindSpore环境设置进行操作：[MindSpore运行环境设置](####MindSpore 运行环境设置)
+aicc tools 中提供了 aicc_monitor装饰器接口，主要用于帮助开发者在AICC平台上监控训练算法的进程是否发生异常，在训练正常结束或者异常中断后，补获日志信息，同时将用户产生的最后一份文件回传保存至obs桶中。主要保存的内容包括：日志（plog、用户打印日志、错误日志、mindspore日志等）、模型权重文件、summary文件、其他用户保存的文件等。如果用户想要保存mindspore相关的图信息（graph、ir、dot、dump文件等），请参考MindSpore环境设置进行操作：[MindSpore运行环境设置](###MindSpore 运行环境设置)
 
-#### aicc_monitor 使用样例：
+### aicc_monitor 使用样例：
 
 ```python
 import aicc_tools as at
@@ -64,11 +64,11 @@ if __name__ == "__main__":
     main()
 ```
 
-### 二、AICC 分布式集群训练启动
+## 二、AICC 分布式集群训练启动
 
 aicc tools为MindSpore 开发者封装了运行环境配置的高阶API接口：context_init(**kwargs)，可以帮助开发者快速使用MindSpore来适配AICC平台进行集群多机多卡的分布式训练启动，且支持线下物理机使用，无需修改代码。
 
-#### context_init 参数说明：
+### context_init 参数说明：
 
 ```tex
 Args:
@@ -86,7 +86,7 @@ Return:
 	device_num: 当前程序使用的总的device数量， 如device_num = 8（单机8卡）
 ```
 
-#### MindSpore 运行环境设置
+### MindSpore 运行环境设置
 
 ```python
 import aicc_tools as at
@@ -101,9 +101,9 @@ parallel_config = {"parallel_mode": 0, "gradients_mean": True}
 rank_id, device_num = at.context_init(seed=0, parallel=True, context_config=context_config, parallel_config=parallel_config)
 ```
 
-##### 保存图信息或Dump信息
+#### 保存图信息或Dump信息
 
-aicc tools 可通过封装的环境初始化函数 context_init(**kwargs)函数开启图信息或Dump信息保存，AICC环境无需指定保存路径，将自动回传至CFTS系统指定的obs_path路径。（注此处必须配套使用[CFTS系统](###三、AICC 文件异步交互系统)和[aicc_monitor监控](###一、AICC 训练进程监控)）
+aicc tools 可通过封装的环境初始化函数 context_init(**kwargs)函数开启图信息或Dump信息保存，AICC环境无需指定保存路径，将自动回传至CFTS系统指定的obs_path路径。（注此处必须配套使用[CFTS系统](##三、AICC 文件异步交互系统)和[aicc_monitor监控](##一、AICC 训练进程监控)）
 
 ```python
 import aicc_tools as at
@@ -120,11 +120,11 @@ rank_id, device_num = at.context_init(
     seed=0, parallel=True, context_config=context_config, parallel_config=parallel_config)
 ```
 
-### 三、AICC 文件异步交互系统
+## 三、AICC 文件异步交互系统
 
 aicc tools为用户提供了规范、便捷和易用的AICC平台文件上传和载入的API接口：CFTS，帮助用户可以将代码快速适配至AICC平台。其最大特点是能够帮助用户在代码层面将文件传输的过程隐去，让用户可以无感知的进行文件交互操作，实现 OBS存储==物理机磁盘的转换过程，且传输过程采用异步多进程方式，不仅可以不增加额外训练成本，还能最大程度上降低用户适配和使用AICC平台的难度。
 
-#### CFTS API 参数说明：
+### CFTS API 参数说明：
 
 ```tex
 Args:
@@ -136,7 +136,7 @@ return：
 	CFTS的class实例
 ```
 
-##### 初始化使用样例：
+#### 初始化使用样例：
 
 ```python
 import aicc_tools as at
@@ -151,23 +151,23 @@ cfts_3 = ac.CFTS(obs_path="obs存储路径", upload_frequence=1, keep_last=False
 ```
 
 
-#### CFTS 对外提供接口：
+### CFTS 对外提供接口：
 
-* **[get_dataset](#####get_dataset 数据集载入)**：载入数据集，并返回存放路径
-* **[get_checkpoint](#####get_checkpoiint 权重文件载入)**：载入权重文件，并返回存放路径
-* **[obs_monitor](#####obs_monitor 文件回传保存obs)**：
+* **[get_dataset](####get_dataset 数据集载入)**：载入数据集，并返回存放路径
+* **[get_checkpoint](####get_checkpoiint 权重文件载入)**：载入权重文件，并返回存放路径
+* **[obs_monitor](####obs_monitor 文件回传保存obs)**：
   * mindspore中callback函数类，用于model.train(callback=[..，checkpoint_monitor()，obs_mointor()])，保证用户文件被保存至用户指定的obs路径中
-* **[checkpoint_monitor](#####checkpoint_monitor 保存权重)**：
+* **[checkpoint_monitor](####checkpoint_monitor 保存权重)**：
   * mindspore中callback函数类，用于model.train(callback=[.., checkpoint_monitor()])，保存模型权重文件
-* **[loss_monitor](#####loss_monitor 训练损失打印)**：
+* **[loss_monitor](####loss_monitor 训练损失打印)**：
   * mindspore中callback函数类，用于model.train(callback=[.., loss_monitor()])，打印训练过程中的loss
-* **[summary_monitor](#####summary_monitor 训练信息收集)**：
+* **[summary_monitor](####summary_monitor 训练信息收集)**：
   * mindspore中callback函数类，用于model.train(callback=[.., summary_monitor()])，保存训练过程中的summary文件
-* **[get_custom_path](#####get_custom_path 自定义文件保存目录)**：AICC平台默认文件存储根路径，所有用户要保存的文件应存放在该目录下，适用于用户想要**自定义保存**一些文件时使用
-* **[send2obs](#####send2obs 数据发送OBS)**：用户自定义回传接口，该接口支持用户自定义训练过程中的文件回传存储至obs中
+* **[get_custom_path](####get_custom_path 自定义文件保存目录)**：AICC平台默认文件存储根路径，所有用户要保存的文件应存放在该目录下，适用于用户想要**自定义保存**一些文件时使用
+* **[send2obs](####send2obs 数据发送OBS)**：用户自定义回传接口，该接口支持用户自定义训练过程中的文件回传存储至obs中
 
 
-##### get_dataset 数据集载入
+#### get_dataset 数据集载入
 
 get_dataset 帮助用户可以在代码层面上像使用物理机磁盘一样使用obs存储服务来加载数据集，仅需要传入数据集所在的obs路径（AICC平台时）或者本地路径，系统会自动帮助用户将数据集从obs中拉取到集群容器上，并返回实际存放的路径给用户，整个过程用户不在感知，和线下物理机使用无差异。
 
@@ -182,7 +182,7 @@ data_path = cfts.get_dataset(dataset_path="obs数据集路径")
 ```
 
 
-##### get_checkpoiint 权重文件载入
+#### get_checkpoiint 权重文件载入
 
 get_checkpoiint 帮助用户可以在代码层面上像使用物理机磁盘一样使用obs存储服务来加载模型权重，仅需要传入模型权重所在的obs路径，系统会自动帮助用户将模型权重从obs中拉取到集群容器上，并返回实际存放的路径给用户，整个过程用户不在感知，和线下物理机使用无差异。
 
@@ -197,14 +197,14 @@ ckpt_path = cfts.get_checkpoint(dataset_path="obs模型路径")
 ```
 
 
-##### obs_monitor 文件回传保存obs
+#### obs_monitor 文件回传保存obs
 
 obs_monitor 函数为用户在AICC平台专门适配了规范的文件实时传输功能，可以帮助用户无感知的将在AICC平台上训练保存的文件保存到obs中，其采用异步传输特性，传输的时间损耗可以由训练时间所掩盖，不会给用户增加额外的训练成本。**值得注意的是，obs_monitor 函数目前只适用于MindSpore框架中，且需要采用model.train() or model.eval() 的方式传入callbacks=[..., obs_monitor()] 参数方式使用，且需要放在callbacks列表的最后！**
 
-请参考以下接口使用：[保存权重文件](#####checkpoint_monitor 保存权重)  [收集训练信息](#####summary_monitor 训练信息收集)  [保存自定义文件](#####get_custom_path 自定义文件保存目录)
+请参考以下接口使用：[保存权重文件](####checkpoint_monitor 保存权重)  [收集训练信息](####summary_monitor 训练信息收集)  [保存自定义文件](####get_custom_path 自定义文件保存目录)
 
 
-##### checkpoint_monitor 保存权重
+#### checkpoint_monitor 保存权重
 
 checkpoint_monitor 帮助用户封装了MindSpore的[ModelCheckpoint](https://www.mindspore.cn/docs/zh-CN/r1.7/api_python/mindspore.train.html?highlight=callback#mindspore.train.callback.ModelCheckpoint), [CheckpointConfig](https://www.mindspore.cn/docs/zh-CN/r1.7/api_python/mindspore.train.html?highlight=callback#mindspore.train.callback.CheckpointConfig)，支持其中所有超参，可以便捷的帮助用户在AICC上保存模型权重文件。
 
@@ -254,7 +254,7 @@ model.train(epoch, dataset, callbacks=[ckpt_cb, cfts.obs_monitor()], dataset_sin
 ```
 
 
-##### loss_monitor 训练损失打印
+#### loss_monitor 训练损失打印
 
 loss_monitor 函数用法与MindSpore的[LossMonitor](https://www.mindspore.cn/docs/zh-CN/r1.7/api_python/mindspore.train.html?highlight=callback#mindspore.train.callback.LossMonitor)一致，不同之处在于为AICC平台适配了aicc tools中的日志系统，当在AICC执行分布式集群训练时，可避免将8张卡的数据同时打印至屏幕，进而简化打屏输出，方便用户查看。
 
@@ -271,7 +271,7 @@ model.train(epoch, dataset, callbacks=[loss_cb, cfts.obs_monitor()], dataset_sin
 ```
 
 
-##### summary_monitor 训练信息收集
+#### summary_monitor 训练信息收集
 
 summary_monitor 函数用法与MindSpore的[SummaryCollector](https://www.mindspore.cn/docs/zh-CN/r1.7/api_python/mindspore.train.html?highlight=callback#mindspore.train.callback.SummaryCollector)一致，不同之处在于专门为AICC平台进行了适配，所收集文件将自动回传保存至用户指定的obs目录中，用户无需感知。同时支持物理裸机环境，传入save_path参数可自定义保存位置。
 
@@ -302,7 +302,7 @@ model.train(epoch, dataset, callbacks=[summary_cb, cfts.obs_monitor()], dataset_
 ```
 
 
-##### get_custom_path 自定义文件保存目录
+#### get_custom_path 自定义文件保存目录
 
 get_custom_path 函数为用户在AICC平台上生成可用于自动回传保存的目录路径，方便用户将自定义保存的一些文件回传保存至用户指定的obs目录中，用户无需感知文件交互过程。
 
@@ -334,7 +334,7 @@ model.train(epoch, dataset, callbacks=[custom_cb_1, custom_cb_2, cfts.obs_monito
 ```
 
 
-##### send2obs 数据发送OBS
+#### send2obs 数据发送OBS
 
 send2obs 为用户提供了规范、稳定的AICC平台文件回传接口， 方便用户调用直接回传已经被保存的各类文件，适用于自定义训练过程中手动回传文件。
 
@@ -361,11 +361,11 @@ cfts.send2obs(src_url="用户自定义的目录或文件", obs_url="s3://new/cus
 ```
 
 
-### 四、AICC 日志系统
+## 四、AICC 日志系统
 
 为了解决云上日志输出混乱的问题，AICC Tools 提供了线上线下行为自动切换、用户无感的日志控制系统，内部包括日志器生成器和重定向器。日志器生成器可根据用户的需要自定义日志器的行为，并返回一个日志器供用户输出日志。重定向器用于解决线上线下多卡训练模型时同时输出MindSpore日志的问题，当开启时，可以使指定节点的MindSpore日志输出到文件中，避免日志刷屏行为。
 
-#### get_logger 日志器生成器 
+### get_logger 日志器生成器 
 
 `get_logger` 用于生成日志器供用户输出日志使用。
 
@@ -428,7 +428,7 @@ logger2 = ac.get_logger('logger2', to_std=False, file_level=('INFO',), file_name
 logger2 = ac.get_logger('logger2')
 ```
 
-#### AiLogFastStreamRedirect2File 重定向器
+### AiLogFastStreamRedirect2File 重定向器
 
 `AiLogFastStreamRedirect2File` 本质为将流重定向到文件的重定向器，MindSpore 的日志默认输出到 `sys.stderr`，通过设置参数我们可以重定向输往 `sys.stderr` 的信息。
 
@@ -483,9 +483,9 @@ redirector.start()
 redirector.stop()
 ```
 
-## AICC Tools 简易Demo
+# AICC Tools 简易Demo
 
-### Demo1 Mindspore常用训练示范
+## Demo1 Mindspore常用训练示范
 
 ```python
 import os
@@ -548,7 +548,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### Demo2 Mindspore 自定义训练示范
+## Demo2 Mindspore 自定义训练示范
 
 ```python
 import os
