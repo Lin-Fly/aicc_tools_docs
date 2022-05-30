@@ -26,7 +26,7 @@ pip install aicc_tools
 ## ModelArts安装
 
 ```tex
-以训练作业服务为例：
+一. 以训练作业服务为例(在线安装方式)：
 1. 在obs桶内准备需要训练的工程文件，工程目录如下：
 	obs://your_bucket/work/your_project
 2. 在obs://your_bucket/work/your_project 目录下放置 aicc_tools 离线wheel包
@@ -36,11 +36,20 @@ pip install aicc_tools
     cd /home/work/user-job-dir/your_project
     pip install aicc_tools-0.1.6-py3-none-any.whl --ignore-installed
     echo ***********ma-pre-end*********
+
+二. 自定义镜像安装方式：
+在打包自定义镜像时离线安装aicc_tools即可
 ```
 
-ma-pre-start.sh脚本是ModelArts在拉起容器训练后，首先会自动执行的脚本，在这里用户可以指定运行的环境或者安装第三方wheel包。
+ma-pre-start.sh脚本是ModelArts旧版训练作业服务在拉起容器训练后，首先会自动执行的脚本，在这里用户可以指定运行的环境或者安装第三方wheel包。
 
-**注：目前aicc_tools V0.1.6 版本基于ModelArts训练作业V1版本开发，V2版本尚不支持，请选择旧版训练作业服务进行试用！！！**
+**注：目前aicc_tools V0.1.6 版本基于ModelArts训练作业V1版本开发，V2版本尚未经过充分测试，请优先选择旧版训练作业服务进行试用！！！**
+
+## 安装包下载
+
+[aicc_tools v 0.1.6 modelarts 训练作业V1版本](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/wheel/aicc_tools-0.1.6_modelartsv1-py3-none-any.whl)
+
+[aicc_tools v 0.1.6 modelarts 训练作业V2版本](https://aicc-tools-docs.obs.cn-southwest-228.cdzs.cn/wheel/aicc_tools-0.1.6_modelartsv2-py3-none-any.whl)
 
 # AICC Tools 全流程使用
 
@@ -194,9 +203,9 @@ get_checkpoiint 帮助用户可以在代码层面上像使用物理机磁盘一�
 ```python
 cfts = ac.CFTS(obs_path="obs存储路径", upload_frequence=1, keep_last=False)
 # Example1：线下物理机使用
-ckpt_path = cfts.get_checkpoint(dataset_path="磁盘模型路径")
+ckpt_path = cfts.get_checkpoint(checkpoint_path="磁盘模型路径")
 # Example2：AICC平台使用
-ckpt_path = cfts.get_checkpoint(dataset_path="obs模型路径")
+ckpt_path = cfts.get_checkpoint(checkpoint_path="obs模型路径")
 ```
 
 
